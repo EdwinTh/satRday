@@ -139,6 +139,8 @@ Just call my name, honey, I'll give you the value:
 my_val
 ```
 
+(For `name` also the term `symbol` is used. Great! Ambiguity for something that is already complex!)
+
 ## Lexical scoping
 
 <foto iemand met verrekijker>
@@ -393,5 +395,69 @@ get_source_data <- function(nr,
   }
   parse(text = paste0("source_data_", nr)) %>% eval()
 }
+```
+
+## Tidyeval
+
+The `tidyverse` is implemented using NSE.
+
+```{r, eval=FALSE}
+mtcars %>% select(cyl)
+```
+
+We now know that `cyl` gets somehow quoted by `select` and evaluated within the data frame.
+
+But what if we want to wrap tidyverse code in a custom function?
+
+## Tidyeval - custom function
+
+This won't work
+
+```{r, eval = FALSE}
+my_grouping_func <- function(x, grouping_var) {
+  x %>% 
+    group_by(grouping_var) %>% 
+    summarise(max_drat = max(drat))
+}
+my_tv_func(mtcars, cyl)
+```
+
+Why?
+
+## Tidyeval - custom function
+
+In order to get it to work:
+
+* quote the variable, like in regular R.
+* unquote again before the argument is swallowed by the tidyverse function
+
+## Tidyeval - custom function
+
+In order to get it to work:
+
+* quote the variable upfront
+* unquote again before the argument is swallowed by the tidyverse function
+
+```{r}
+my_grouping_func <- function(x, grouping_var) {
+  x %>% 
+    group_by(!!grouping_var) %>% 
+    summarise(max_drat = max(drat))
+}
+my_grouping_func(mtcars, quo(cyl))
+```
+
+## Tidyeval - custom function
+
+Just like using `substitute` you can quote the arguments value with `enquo`.
+
+```{r}
+my_grouping_func <- function(x, grouping_var) {
+  grouping_var_q <- enquo(grouping_var)
+  x %>% 
+    group_by(!!grouping_var_q) %>% 
+    summarise(max_drat = max(drat))
+}
+my_grouping_func(mtcars, cyl)
 ```
 
