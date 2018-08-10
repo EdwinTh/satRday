@@ -5,6 +5,11 @@ date: "7/23/2018"
 output: ioslides_presentation
 ---
 
+```{r,echo=FALSE, message=FALSE, warning=FALSE}
+library(dplyr)
+```
+
+
 ## Why do we love R so much for data-analysis?
 
 - R is very interactive, Q&A with your data
@@ -15,20 +20,19 @@ output: ioslides_presentation
 
 ## Why do we love R so much for data-analysis?
 
-- R is super rich in statistical models:
+- R is super rich in statistical models
 
 ## Why do we love R so much for data-analysis?
 
-- We can program in R:
+- We can program in R
 
 ## Why do we love R so much for data-analysis?
 
-- We don't have to use base R:
+- We don't have to use base R. 
 
-## What is a DSL?
+There are tools and packages around that make our life even more fun!
 
-
-## We all use NSE:
+## We all use NSE!
 
 When you started using R, did you mix up?
 
@@ -48,7 +52,7 @@ Or wondered why the `library(padr)` worked. Even when there is no `padr` variabl
 
 Apparantly, things that ought not to work, are working.
 
-This results is a language full of black magic (also in base):
+This results is a language full of magic (also in base):
 
 ```{r, eval = FALSE}
 library(mtcars)
@@ -63,39 +67,23 @@ data.table::as.data.table(mtcars)[ ,mean(mpg), by = cyl]
 
 ## Why data analysts love it and cs people don't
 
-R is designed to do data science. (Well, then it was called statistics).
+R is designed to do data science. (Well, then it was still called statistics).
 
 Flexibility to maximize insights.
 
-Enable DSL creation that remove burdens and slow you down.
+Enable DSL creation to tailor make tools to solve a specific problem without overhead.
 
 With flexibility comes ambiguity and responsibility.
 
 DSL's can only work if they intuitively close to what you know and expect.
 
-## For the love of flame wars
+## What is this talk?
 
-<Wes tweet>
-
-## What to expect?
-
-<learn along>
-
-## What to expect?
-
-Going over some key concepts of NSE in base R.
-
-- promise
-- quote
-- expression
-- name
-- environment
-
-Have a look at tidy evaluation and how it differes from base R.
+<img src="sing-along.jpg" height="525px" width="700" />
 
 ## What is standard in the first place?
 
-```{r}
+```{r, error=TRUE}
 my_val <- 123
 
 my_func <- function(x) {
@@ -109,11 +97,13 @@ my_func(my_val)
 my_func(your_val)
 ```
 
+## 
+
+<img src="shakespeare.jpg" height="525px" width="800" />
+
 ## What's in a NAME
 
-<Romeo and Juliet>
-
-## What's in a NAME
+By creating a variable we assign a **value** to a **name**.
 
 ```{r}
 my_val <- 123
@@ -139,12 +129,6 @@ Just call my name, honey, I'll give you the value:
 my_val
 ```
 
-(For `name` also the term `symbol` is used. Great! Ambiguity for something that is already complex!)
-
-## Lexical scoping
-
-<foto iemand met verrekijker>
-
 ## Lexical scoping
 
 R starts looking for the value of name in the local environment.
@@ -160,7 +144,7 @@ a_func()
 
 ## Lexical scoping
 
-When it can't find it locally, move up to the parent environment.
+When it can't find it locally, move up to the parent environment (where the function was created).
 
 ```{r}
 z <- "a variable in the global"
@@ -181,11 +165,13 @@ nobody_loves_me <- function() {
 nobody_loves_me()
 ```
 
+So this is standard evaluation in R. 
+
 ## Wait for it
 
 When evaluating a name we look for the value bound to it. We err when we can't find it. 
 
-We can also ask R to postpone judgement, by storing the request in a name object.
+We can also ask R to postpone judgement, by storing the request in a **name object**.
 
 ```{r}
 quote(my_unknown_var) %>% class()
@@ -195,7 +181,7 @@ quote(my_unknown_var) %>% class()
 
 When evaluating a name we look for the value bound to it. R errs when it can't find the value. 
 
-We can also ask R to postpone judgement, by storing the request in a name object.
+We can also ask R to postpone judgement, by storing the request in a **name object**.
 
 ```{r}
 quote(my_unknown_var) %>% class()
@@ -221,11 +207,15 @@ quoted_var <- quote(wait_for_it)
 quoted_var
 ```
 
-It will start looking for the value only we ask to evaluate it.
+## Wait for it
 
-```{r}
+It will start looking for the value only when we ask to evaluate it.
+
+```{r, error=TRUE}
 eval(quoted_var)
 ```
+
+## Wait for it
 
 ```{r}
 wait_for_it <- "I finally have a value"
@@ -240,17 +230,17 @@ We can quote the following things:
 
 * *call*: calling of a function
 
-* *pairlist*:
+* *pairlist*: something from the past you shouldn't bother about
 
 * *literal*: evaluates to the value itself
 
-## Expressions
+## Expressions: "don't be another SQL"
 
-<NWA express yourself>
+<img src="express.gif" height="525px" width="800" />
 
 ## Call
 
-Evaluating a function, can be delayed by quoting it.
+Just like a **name**, a function **call* can be delayed by quoted.
 
 ```{r}
 my_little_filter <- function(x, 
@@ -264,7 +254,7 @@ my_little_filter(mtcars, quote(cyl == 4)) %>% head(2)
 
 ## 
 
-<Meme of angry kid: "But I don't want to quote myself">
+<img src="quote-yourself.jpg" height="525px" width="800" />
 
 ## Quoting inside the function
 
@@ -276,11 +266,11 @@ as.data.table(mtcars)[, cyl]
 ggplot(mtcars, aes(cyl)) + geom_bar()
 ```
 
-Why does R not from an error? There is no `cyl` in the global...
+Why does R not throw an error? There is no `cyl` in the global...
 
 ## Lazy, lazy R
 
-<koala foto>
+<img src="koala.jpeg" height="525px" width="600" />
 
 ## Lazy, lazy R
 
@@ -292,28 +282,22 @@ koala <- function(x, y) {
 koala(3)
 ```
 
-## Obnoxious Python
+## Industrious Python
 
-<kid sitting in the front of the class>
-
-## Obnoxious Python
-
-```{python}
+```{python, error=TRUE}
 def koala(x, y):
   return(x + 42)
 
 koala(3)
 ```
 
-Python is strict, you said there were going to be two arguments, if there are not its wrong.
-
 ## Quoting inside a function
 
-So, R is this chilled-out kid that doesn't make a fuz until it realy has to.
+So, R doesn't make a fuz until it realy has to.
 
-We can quote inside functions.
+This allows quoting inside functions.
 
-```{r}
+```{r, error=TRUE}
 my_second_little_filter <- function(x, bare_call) {
   call <- quote(bare_call)
   x[eval(call, envir = x), ]
@@ -326,28 +310,30 @@ Why isn't this working?
 
 ## Quoting inside a function
 
+`quote` does literally quote the input, but we want to quote the value of the argument, not the name.
+
+Here we need `substitute`:
+
 ```{r}
-my_correct_second_little_filter <- function(x, bare_call) {
-  call <- substitute(bare_call)
-  x[eval(call, envir = x), ]
+substitute_example <- function(x) {
+  substitute(x)
 }
+substitute_example(cyl == 4)
+substitute_example(cyl == 4) %>% class()
 ```
 
-Instead of `quote`, which quotes the argument name rather than the variable, we use `substitute`.
 
-```{r}
-my_correct_second_little_filter(mtcars, cyl == 4) %>% head(2)
-```
+## That's a *promise*
 
-## That's a promise
+<img src="promise.jpg" height="525px" width="700" />
 
-Each function argument is stored in a promise:
+## That's a *promise*
 
-<illustratie drie blokjes argument: value: expression>
+So all function arguments are quoted and stored in the promise, alongside the value.
 
-When the argument gets evaluated in the function, R will retrieve the value and R if it can't find it.
+`substitute` retrieves the expression.
 
-`substitute` takes the promise's expression, it doesn't matter if there is no valid value. 
+
 
 ## All together
 
@@ -381,7 +367,7 @@ func_caller(1)
 func_caller(2)
 ```
 
-## A useful example
+## An actual useful example
 
 ```{r}
 get_source_data <- function(nr,
@@ -390,7 +376,8 @@ get_source_data <- function(nr,
   if (file.exists(file_path) && !rerun) {
     load(file_path)
   } else {
-    assign(paste0("source_data_", nr), run_query(nr))
+    assign(paste0("source_data_", nr), 
+           parse(text = paste0("query_", nr)) %>% eval())
     save(list = paste0("source_data_", nr), file = file_path)
   }
   parse(text = paste0("source_data_", nr)) %>% eval()
