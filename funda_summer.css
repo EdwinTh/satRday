@@ -1,0 +1,41 @@
+/* css for Rmarkdown ioslides_presentation
+Created by Edwin Thoen January 2018
+Based on the latest style guide at that time.
+Please use in conjunction with ggplot's theme_funda
+and the funda colors also present in the fundaR package*/
+
+html {
+	padding: 0;
+	}
+
+p {
+	color: #333333;
+	font-family: "Proxima Nova Alt Reg", sans-serif;
+}
+
+h1,h2,h3,h4,h5,h6 {
+	color: #0071B3;
+	font-family: "Proxima Nova Alt Reg", sans-serif;
+}
+
+a:link {
+	text-decoration: none;
+	color: ,#F7A100;
+	}
+
+slides > slide.backdrop {
+	 background: #FFFFFF;
+}
+
+slides > slide.title-slide {
+	background-image:
+		url("img-funda-ios/fib_summer.png"),
+		url("img-funda-ios/logo-oranje.png");
+	background-size:
+		100% 40%,
+		150px 150px;
+	background-repeat: no-repeat;
+	background-position:
+		top center,
+		right bottom;
+}

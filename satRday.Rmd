@@ -1,14 +1,15 @@
 ---
-title: "R's NSE learn-along"
+title: "An exploration of NSE and tidyeval"
 author: "Edwin Thoen"
-date: "7/23/2018"
-output: ioslides_presentation
+date: "2018-09-01"
+output:
+  ioslides_presentation:
+    css: funda_summer.css
 ---
 
 ```{r,echo=FALSE, message=FALSE, warning=FALSE}
 library(dplyr)
 ```
-
 
 ## Why do we love R so much for data-analysis?
 
@@ -28,9 +29,32 @@ library(dplyr)
 
 ## Why do we love R so much for data-analysis?
 
-- We don't have to use base R. 
+- We don't have to use R when using R 
 
-There are tools and packages around that make our life even more fun!
+## Why do we love R so much for data-analysis?
+
+- We don't have to use R when using R 
+
+We can do
+
+```{r}
+library(dplyr)
+mtcars %>% mutate(cyl_drat = cyl + drat)
+```
+
+or
+
+
+```{r}
+mtcars_dt <- data.table::as.data.table(mtcars)
+mtcars_dt[, cyl_drat := cyl + drat]
+```
+
+Instead of 
+
+```{r}
+mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
+```
 
 ## We all use NSE!
 
@@ -46,17 +70,15 @@ and
 library(padr)
 ```
 
-Or wondered why the `library(padr)` worked. Even when there is no `padr` variable in the environment?
+Or wondered why the `library(padr)` worked. Even when there is no variable callend`padr`?
 
-## We all use NSE:
+## We all use NSE!
 
 Apparantly, things that ought not to work, are working.
 
 This results is a language full of magic (also in base):
 
 ```{r, eval = FALSE}
-library(mtcars)
-
 subset(mtcars, cyl == 6)
 
 ggplot2::ggplot(mtcars, aes(mpg, drat)) +
@@ -75,9 +97,7 @@ Enable DSL creation to tailor make tools to solve a specific problem without ove
 
 With flexibility comes ambiguity and responsibility.
 
-DSL's can only work if they intuitively close to what you know and expect.
-
-## What is this talk?
+## What is this talk about?
 
 <img src="sing-along.jpg" height="525px" width="700" />
 
@@ -221,6 +241,19 @@ eval(quoted_var)
 wait_for_it <- "I finally have a value"
 eval(quoted_var)
 ```
+
+## Building our own select
+
+```{r}
+diy_select <- function(x, name) {
+  eval(name, envir = x)
+}
+
+diy_select(mtcars, quote(cyl))
+
+diy_select(mtcars, quote(vs))
+```
+
 
 ## Not just names
 
@@ -415,8 +448,9 @@ Why?
 
 In order to get it to work:
 
-* quote the variable, like in regular R.
+* quote the variable, like in regular R
 * unquote again before the argument is swallowed by the tidyverse function
+* then tidyverse function can go back and quote it again
 
 ## Tidyeval - custom function
 
@@ -424,6 +458,7 @@ In order to get it to work:
 
 * quote the variable upfront
 * unquote again before the argument is swallowed by the tidyverse function
+* then tidyverse function can go back and quote it again
 
 ```{r}
 my_grouping_func <- function(x, grouping_var) {
