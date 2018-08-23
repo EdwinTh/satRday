@@ -11,6 +11,36 @@ output:
 library(dplyr)
 ```
 
+## whoami
+
+Data scientist @ funda
+
+Background:
+
+Applied Statistics
+
+Previously in consulting and banking
+
+## whoami
+
+<picture mountain>
+
+## whoami
+
+<picture Juul>
+
+## whoami
+
+<gif Hadley>
+
+## whoami
+
+thatssorandom.com
+
+@edwin_thoen
+
+CRAN: padr, GGally, recipes
+
 ## Why do we love R so much for data-analysis?
 
 - R is very interactive, Q&A with your data
@@ -273,7 +303,7 @@ We can quote the following things:
 
 ## Call
 
-Just like a **name**, a function **call* can be delayed by quoted.
+Just like a **name**, a function **call** can be delayed by quoted.
 
 ```{r}
 my_little_filter <- function(x, 
