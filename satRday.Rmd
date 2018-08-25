@@ -69,11 +69,10 @@ We can do
 
 ```{r}
 library(dplyr)
-mtcars %>% mutate(cyl_drat = cyl + drat)
+mtcars <- mtcars %>% mutate(cyl_drat = cyl + drat)
 ```
 
 or
-
 
 ```{r}
 mtcars_dt <- data.table::as.data.table(mtcars)
@@ -85,6 +84,10 @@ Instead of
 ```{r}
 mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
 ```
+
+## These wonderful packages are brought to you by Non-Standard Evaluation:
+
+<hex stickers ggplot, dplyr, data.table>
 
 ## We all use NSE!
 
@@ -100,13 +103,13 @@ and
 library(padr)
 ```
 
-Or wondered why the `library(padr)` worked. Even when there is no variable callend`padr`?
+Or wondered why the `library(padr)` worked. Even when there is no variable callend `padr`?
 
 ## We all use NSE!
 
 Apparantly, things that ought not to work, are working.
 
-This results is a language full of magic (also in base):
+This results in a language full of magic (also in base):
 
 ```{r, eval = FALSE}
 subset(mtcars, cyl == 6)
@@ -173,7 +176,7 @@ my_val <- 123
 
 Binding happens in an environment, in this case the global.
 
-Just call my name, honey, I'll give you the value:
+Just call my name, I'll give you the value:
 
 ```{r}
 my_val
@@ -181,7 +184,7 @@ my_val
 
 ## Lexical scoping
 
-R starts looking for the value of name in the local environment.
+R starts looking for the value of name in the environment the name is called in.
 
 ```{r}
 x <- "a variable in the global"
@@ -194,7 +197,7 @@ a_func()
 
 ## Lexical scoping
 
-When it can't find it locally, move up to the parent environment (where the function was created).
+When it can't find it locally, move up to the parent environment (where the current env was created).
 
 ```{r}
 z <- "a variable in the global"
@@ -239,14 +242,7 @@ quote(my_unknown_var) %>% class()
 
 This is the act of **quoting**, saving something to be evaluated later.
 
-## Wait for it
-
-Quoted variable names are not evaluated. It doesn't matter if they don't exist.
-
-```{r}
-quated_var <- quote(wait_for_it)
-quated_var
-```
+(**name** is also called **symbol**)
 
 ## Wait for it
 
@@ -272,48 +268,27 @@ wait_for_it <- "I finally have a value"
 eval(quoted_var)
 ```
 
-## Building our own select
+## Building our own `select`
 
 ```{r}
 diy_select <- function(x, name) {
   eval(name, envir = x)
 }
 
-diy_select(mtcars, quote(cyl))
-
-diy_select(mtcars, quote(vs))
+diy_select(mtcars, quote(cyl)) %>% head(5)
 ```
 
-
-## Not just names
-
-We can quote the following things:
-
-* *name*: the name of an R object
-
-* *call*: calling of a function
-
-* *pairlist*: something from the past you shouldn't bother about
-
-* *literal*: evaluates to the value itself
-
-## Expressions: "don't be another SQL"
-
-<img src="express.gif" height="525px" width="800" />
-
-## Call
-
-Just like a **name**, a function **call** can be delayed by quoted.
+## Building our own `select`
 
 ```{r}
-my_little_filter <- function(x, 
-                             call) {
-  x[eval(call, envir = x), ]
+diy_select <- function(x, name) {
+  eval(name, envir = x)
 }
 
-my_little_filter(mtcars, quote(cyl == 4)) %>% head(2)
+diy_select(mtcars, quote(cyl)) %>% head(5)
 ```
 
+Note that we can specify a data frame as environment. The column names can be called as variables within it.
 
 ## 
 
@@ -356,17 +331,17 @@ koala(3)
 
 ## Quoting inside a function
 
-So, R doesn't make a fuz until it realy has to.
+So, R doesn't make a fuz until it really has to.
 
 This allows quoting inside functions.
 
 ```{r, error=TRUE}
-my_second_little_filter <- function(x, bare_call) {
-  call <- quote(bare_call)
-  x[eval(call, envir = x), ]
+diy_select_2 <- function(x, bare_name) {
+  name <- quote(bare_call)
+  eval(name, env = x)
 }
 
-my_second_little_filter(mtcars, cyl == 4) %>% head(2)
+diy_select_2(mtcars, cyl == 4) %>% head(2)
 ```
 
 Why isn't this working?
@@ -381,10 +356,44 @@ Here we need `substitute`:
 substitute_example <- function(x) {
   substitute(x)
 }
-substitute_example(cyl == 4)
-substitute_example(cyl == 4) %>% class()
+substitute_example(cyl)
+substitute_example(cyl) %>% class()
 ```
 
+## Not just names
+
+We can quote the following things:
+
+* *name*: the name of an R object
+
+* *call*: calling of a function
+
+* *pairlist*: something from the past you shouldn't bother about
+
+* *literal*: evaluates to the value itself
+
+## Expressions: "don't be another SQL"
+
+<img src="express.gif" height="525px" width="800" />
+
+## Call
+
+Just like a **name**, a function **call** can be delayed by quoted.
+
+```{r}
+my_little_filter <- function(x, 
+                             call) {
+  call_quoted <- substitute(call)
+  retain_row  <- eval(call_quoted, envir = x)
+  x[retain_row, ]
+}
+
+my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
+```
+
+## The **promise** you make
+
+<img src="cock-robin.png" height="525px" width="700" />
 
 ## That's a *promise*
 
@@ -392,11 +401,39 @@ substitute_example(cyl == 4) %>% class()
 
 ## That's a *promise*
 
-So all function arguments are quoted and stored in the promise, alongside the value.
+The value slot is empty at promise creation.
 
-`substitute` retrieves the expression.
+Only when the argument's expression is evaluated in the function, we start looking for it. 
 
+## That's a *promise*
 
+The value slot is empty at promise creation.
+
+Only when the argument's expression is evaluated in the function, we start looking for it. 
+
+Remember `koala`?
+
+```{r}
+koala <- function(x, y) {
+  x + 42
+}
+```
+
+## That's a *promise*
+
+Now, that's why `subsitute` works!
+
+Accesses the expression in the promise without evaluating it.
+
+```{r}
+subs_func <- function(val) {
+  vals_expr <- substitute(val)
+  deparse(vals_expr)
+}
+subs_func(anything_goes)
+```
+
+Note that `deparse` coerces the expression to a character.
 
 ## All together
 
@@ -409,7 +446,6 @@ my_correct_second_little_filter <- function(x, bare_call) {
 my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
 ```
 
-
 * The call `cyl == 4` on itself is invalid, there is no `cyl` variable in the globla.
 * But, R refrains from judgement, stores it in a promise.
 * `substitute` retrieves just the expression, which is the quoted call.
@@ -417,6 +453,10 @@ my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
 * Here it is completely valid, because there is a `cyl` variable.
 
 ## Quoting strings
+
+We saw that `deparse` creates a character from an expression.
+
+`parse` does it do other way around.
 
 ```{r}
 func1 <- function() "Calling function 1"
@@ -436,20 +476,20 @@ func_caller(2)
 get_source_data <- function(nr,
                             rerun = FALSE) {
   file_path <- paste0("data/source_data_", nr, ".Rdata")
-  if (file.exists(file_path) && !rerun) {
-    load(file_path)
-  } else {
+  
+  if (!file.exists(file_path) || rerun) {
     assign(paste0("source_data_", nr), 
            parse(text = paste0("query_", nr)) %>% eval())
     save(list = paste0("source_data_", nr), file = file_path)
+  } else {
+   load(file_path) 
   }
-  parse(text = paste0("source_data_", nr)) %>% eval()
 }
 ```
 
 ## Tidyeval
 
-The `tidyverse` is implemented using NSE.
+The `tidyverse` NSE dialect.
 
 ```{r, eval=FALSE}
 mtcars %>% select(cyl)
@@ -464,7 +504,7 @@ But what if we want to wrap tidyverse code in a custom function?
 This won't work
 
 ```{r, eval = FALSE}
-my_grouping_func <- function(x, grouping_var) {
+my_tv_func <- function(x, grouping_var) {
   x %>% 
     group_by(grouping_var) %>% 
     summarise(max_drat = max(drat))
@@ -491,12 +531,12 @@ In order to get it to work:
 * then tidyverse function can go back and quote it again
 
 ```{r}
-my_grouping_func <- function(x, grouping_var) {
+my_tv_func <- function(x, grouping_var) {
   x %>% 
     group_by(!!grouping_var) %>% 
     summarise(max_drat = max(drat))
 }
-my_grouping_func(mtcars, quo(cyl))
+my_tv_func(mtcars, quo(cyl))
 ```
 
 ## Tidyeval - custom function
@@ -512,4 +552,24 @@ my_grouping_func <- function(x, grouping_var) {
 }
 my_grouping_func(mtcars, cyl)
 ```
+
+## 
+
+
+
+## Things not covered
+
+- quasiquotation
+
+- quosures
+
+- formulas
+
+## Thank You!
+
+edwinthoen@gmail.com  
+
+github.com/EdwinTh
+
+@edwin_thoen
 
