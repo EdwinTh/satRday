@@ -164,6 +164,15 @@ With flexibility comes ambiguity and responsibility.
 
 * Because you are a geek who can't stand not knowing.
 
+##
+
+<center><img src="rijksmuseum.jpg" height="464px" width="700" /></center>
+
+##
+
+<center><img src="bierfiets.jpg" height="464px" width="700" /></center>
+
+
 ## Why should you care about how NSE works?
 
 * Because you are a geek who can't stand not knowing.
@@ -621,7 +630,15 @@ my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
 
 edwinthoen@gmail.com  
 
-github.com/EdwinTh
-
 @edwin_thoen
+
+github.com/EdwinTh/satRday
+
+edwinth.github.io/blog/nse
+
+edwinth.github.io/blog/dplyr-recipes
+
+
+
+
 
