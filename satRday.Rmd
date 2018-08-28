@@ -13,27 +13,21 @@ library(dplyr)
 
 ## whoami
 
+<center><img src="mountains.jpg" height="500px" width="375" /></center>
+
+## whoami
+
+<center><img src="juul.jpg" height="500px" width="375" /></center>
+
+## whoami
+
+<center><img src="rcode.gif" height="348" width="498" /></center>
+
+## whoami
+
 Data scientist @ funda
 
-Background:
-
-Applied Statistics
-
-Previously in consulting and banking
-
-## whoami
-
-<picture mountain>
-
-## whoami
-
-<picture Juul>
-
-## whoami
-
-<gif Hadley>
-
-## whoami
+MSc in Applied Statistics
 
 thatssorandom.com
 
@@ -41,29 +35,53 @@ thatssorandom.com
 
 CRAN: padr, GGally, recipes
 
+## What is this talk about?
+
+<center><img src="sing-along.jpg" height="525px" width="700" /></center>
+
+## Lets show some hands
+
+Who:
+
+## Lets show some hands
+
+Who:
+
+* is very experienced with using NSE (base, tidyeval, or both)?
+
+## Lets show some hands
+
+Who:
+
+* is very experienced with using NSE (base, tidyeval, or both)?
+* applies it now and then, but not with great comfort?
+
+## Lets show some hands
+
+Who:
+
+* is very experienced with using NSE (base, tidyeval, or both)?
+* applies it now and then, but not with great comfort?
+* only knows it at face value?
+
+## Lets show some hands
+
+Who:
+
+* is very experienced with using NSE (base, tidyeval, or both)?
+* applies it now and then, but not with great comfort?
+* only knows it at face value?
+* has hardly a clue what it is?
+
 ## Why do we love R so much for data-analysis?
 
-- R is very interactive, Q&A with your data
+## Why do we love R so much for data-analysis?
+
+We don't have to use R when using R!
 
 ## Why do we love R so much for data-analysis?
 
-- R has fantastic functionalities for plotting
-
-## Why do we love R so much for data-analysis?
-
-- R is super rich in statistical models
-
-## Why do we love R so much for data-analysis?
-
-- We can program in R
-
-## Why do we love R so much for data-analysis?
-
-- We don't have to use R when using R 
-
-## Why do we love R so much for data-analysis?
-
-- We don't have to use R when using R 
+We don't have to use R when using R!
 
 We can do
 
@@ -85,9 +103,19 @@ Instead of
 mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
 ```
 
-## These wonderful packages are brought to you by Non-Standard Evaluation:
+## We all use NSE!
 
-<hex stickers ggplot, dplyr, data.table>
+When you started using R, did you mix up?
+
+```{r, eval=FALSE}
+install.packages("padr")
+```
+
+and
+
+```{r, eval=FALSE}
+library(padr)
+```
 
 ## We all use NSE!
 
@@ -109,7 +137,7 @@ Or wondered why the `library(padr)` worked. Even when there is no variable calle
 
 Apparantly, things that ought not to work, are working.
 
-This results in a language full of magic (also in base):
+This results in a language full of magic:
 
 ```{r, eval = FALSE}
 subset(mtcars, cyl == 6)
@@ -120,19 +148,26 @@ ggplot2::ggplot(mtcars, aes(mpg, drat)) +
 data.table::as.data.table(mtcars)[ ,mean(mpg), by = cyl]
 ```
 
-## Why data analysts love it and cs people don't
+## Why data analysts love it (and cs people don't)
 
 R is designed to do data science. (Well, then it was still called statistics).
 
-Flexibility to maximize insights.
+Flexibility to maiximize insight.
 
 Enable DSL creation to tailor make tools to solve a specific problem without overhead.
 
 With flexibility comes ambiguity and responsibility.
 
-## What is this talk about?
+## Why should you care about how NSE works?
 
-<img src="sing-along.jpg" height="525px" width="700" />
+## Why should you care about how NSE works?
+
+* Because you are a geek who can't stand not knowing.
+
+## Why should you care about how NSE works?
+
+* Because you are a geek who can't stand not knowing.
+* Because most R users slip into tool design sooner or later.
 
 ## What is standard in the first place?
 
@@ -152,11 +187,11 @@ my_func(your_val)
 
 ## 
 
-<img src="shakespeare.jpg" height="525px" width="800" />
+<center><img src="shakespeare.jpg" height="525px" width="800" /></center>
 
 ## What's in a NAME
 
-By creating a variable we assign a **value** to a **name**.
+By creating a variable we bind a **value** to a **name**.
 
 ```{r}
 my_val <- 123
@@ -181,6 +216,8 @@ Just call my name, I'll give you the value:
 ```{r}
 my_val
 ```
+
+This is *evaluating* the name.
 
 ## Lexical scoping
 
@@ -222,9 +259,7 @@ So this is standard evaluation in R.
 
 ## Wait for it
 
-When evaluating a name we look for the value bound to it. We err when we can't find it. 
-
-We can also ask R to postpone judgement, by storing the request in a **name object**.
+We can also ask R to postpone judgement, by storing the variable name in a **name object**.
 
 ```{r}
 quote(my_unknown_var) %>% class()
@@ -232,15 +267,13 @@ quote(my_unknown_var) %>% class()
 
 ## Wait for it
 
-When evaluating a name we look for the value bound to it. R errs when it can't find the value. 
-
-We can also ask R to postpone judgement, by storing the request in a **name object**.
+We can also ask R to postpone judgement, by storing the variable name in a **name object**.
 
 ```{r}
 quote(my_unknown_var) %>% class()
 ```
 
-This is the act of **quoting**, saving something to be evaluated later.
+This is the act of **quoting**, saving a variable name to be evaluated later.
 
 (**name** is also called **symbol**)
 
@@ -251,7 +284,22 @@ Quoted variable names are not evaluated. It doesn't matter if they don't exist.
 ```{r}
 quoted_var <- quote(wait_for_it)
 quoted_var
+quoted_var %>% class()
 ```
+
+## Wait for it
+
+Quoted variable names are not evaluated. It doesn't matter if they don't exist.
+
+```{r}
+quoted_var <- quote(wait_for_it)
+quoted_var
+quoted_var %>% class()
+```
+
+We have two variables here:
+
+The regular variable `quoted_var` contains the quoted variable `wait_for_it`.
 
 ## Wait for it
 
@@ -268,31 +316,37 @@ wait_for_it <- "I finally have a value"
 eval(quoted_var)
 ```
 
-## Building our own `select`
+## What is the use?
+
+## What is the use?
+
+We can evaluate the `name` in a different environment.
+
+## Building our own `pull`
 
 ```{r}
-diy_select <- function(x, name) {
+diy_pull <- function(x, name) {
   eval(name, envir = x)
 }
 
-diy_select(mtcars, quote(cyl)) %>% head(5)
+diy_pull(mtcars, quote(cyl)) %>% head(5)
 ```
 
-## Building our own `select`
+## Building our own `pull`
 
 ```{r}
-diy_select <- function(x, name) {
+diy_pull <- function(x, name) {
   eval(name, envir = x)
 }
 
-diy_select(mtcars, quote(cyl)) %>% head(5)
+diy_pull(mtcars, quote(cyl)) %>% head(5)
 ```
 
 Note that we can specify a data frame as environment. The column names can be called as variables within it.
 
 ## 
 
-<img src="quote-yourself.jpg" height="525px" width="800" />
+<center><img src="quote-yourself.jpg" height="525px" width="800" /></center>
 
 ## Quoting inside the function
 
@@ -308,7 +362,7 @@ Why does R not throw an error? There is no `cyl` in the global...
 
 ## Lazy, lazy R
 
-<img src="koala.jpeg" height="525px" width="600" />
+<center><img src="koala.jpeg" height="525px" width="600" /></center>
 
 ## Lazy, lazy R
 
@@ -331,24 +385,35 @@ koala(3)
 
 ## Quoting inside a function
 
-So, R doesn't make a fuz until it really has to.
+So, R doesn't make a fuss until it really has to.
+
+This allows quoting inside functions.
+
+```{r, eval=FALSE}
+diy_pull_2 <- function(x, bare_name) {
+  name <- quote(bare_name)
+  eval(name, env = x)
+}
+```
+
+## Quoting inside a function
+
+So, R doesn't make a fuss until it really has to.
 
 This allows quoting inside functions.
 
 ```{r, error=TRUE}
-diy_select_2 <- function(x, bare_name) {
-  name <- quote(bare_call)
+diy_pull_2 <- function(x, bare_name) {
+  name <- quote(bare_name)
   eval(name, env = x)
 }
 
-diy_select_2(mtcars, cyl == 4) %>% head(2)
+diy_pull_2(mtcars, cyl)
 ```
-
-Why isn't this working?
 
 ## Quoting inside a function
 
-`quote` does literally quote the input, but we want to quote the value of the argument, not the name.
+`quote` does literally quote the input, but we want to quote the value at the argument, not the arg's name.
 
 Here we need `substitute`:
 
@@ -358,6 +423,17 @@ substitute_example <- function(x) {
 }
 substitute_example(cyl)
 substitute_example(cyl) %>% class()
+```
+
+## Quoting inside a function
+
+```{r, error=TRUE}
+diy_pull_2 <- function(x, bare_name) {
+  name <- substitute(bare_name)
+  eval(name, env = x)
+}
+
+diy_pull_2(mtcars, cyl)
 ```
 
 ## Not just names
@@ -374,11 +450,11 @@ We can quote the following things:
 
 ## Expressions: "don't be another SQL"
 
-<img src="express.gif" height="525px" width="800" />
+<center><img src="express.gif" height="525px" width="800" /></center>
 
 ## Call
 
-Just like a **name**, a function **call** can be delayed by quoted.
+Just like a **name**, a function **call** can be delayed by quoting.
 
 ```{r}
 my_little_filter <- function(x, 
@@ -397,7 +473,7 @@ my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
 
 ## That's a *promise*
 
-<img src="promise.jpg" height="525px" width="700" />
+<img src="promise.png" height="525px" width="800" />
 
 ## That's a *promise*
 
@@ -419,7 +495,18 @@ koala <- function(x, y) {
 }
 ```
 
-## That's a *promise*
+## Promising koala
+
+When we call `koala` we create the following promise
+
+```{r, eval = FALSE}
+x_value <- 42
+koala(x = x_value)
+```
+
+<center><img src="koala-promise.png" height="262.5" width="400" /></center>
+
+## Accessing the expression slot!
 
 Now, that's why `subsitute` works!
 
@@ -433,59 +520,7 @@ subs_func <- function(val) {
 subs_func(anything_goes)
 ```
 
-Note that `deparse` coerces the expression to a character.
-
-## All together
-
-```{r}
-my_correct_second_little_filter <- function(x, bare_call) {
-  call <- substitute(bare_call)
-  x[eval(call, envir = x), ]
-}
-
-my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
-```
-
-* The call `cyl == 4` on itself is invalid, there is no `cyl` variable in the globla.
-* But, R refrains from judgement, stores it in a promise.
-* `substitute` retrieves just the expression, which is the quoted call.
-* This expression is evaluated within the environment of `x`.
-* Here it is completely valid, because there is a `cyl` variable.
-
-## Quoting strings
-
-We saw that `deparse` creates a character from an expression.
-
-`parse` does it do other way around.
-
-```{r}
-func1 <- function() "Calling function 1"
-func2 <- function() "Calling function 2"
-
-func_caller <- function(nr) { 
-  eval(parse(text = paste0("func", nr)))()
-}
-
-func_caller(1)
-func_caller(2)
-```
-
-## An actual useful example
-
-```{r}
-get_source_data <- function(nr,
-                            rerun = FALSE) {
-  file_path <- paste0("data/source_data_", nr, ".Rdata")
-  
-  if (!file.exists(file_path) || rerun) {
-    assign(paste0("source_data_", nr), 
-           parse(text = paste0("query_", nr)) %>% eval())
-    save(list = paste0("source_data_", nr), file = file_path)
-  } else {
-   load(file_path) 
-  }
-}
-```
+Note that `deparse` coerces the expression to a character. Its inverse is `parse`.
 
 ## Tidyeval
 
@@ -530,7 +565,7 @@ In order to get it to work:
 * unquote again before the argument is swallowed by the tidyverse function
 * then tidyverse function can go back and quote it again
 
-```{r}
+```{r, eval = FALSE}
 my_tv_func <- function(x, grouping_var) {
   x %>% 
     group_by(!!grouping_var) %>% 
@@ -553,17 +588,34 @@ my_grouping_func <- function(x, grouping_var) {
 my_grouping_func(mtcars, cyl)
 ```
 
-## 
+## Summary
 
+<center><img src="homer.png" height="500px" width="500" /></center>
 
+## Summary
 
-## Things not covered
+```{r}
+my_correct_second_little_filter <- function(x, bare_call) {
+  call <- substitute(bare_call)
+  x[eval(call, envir = x), ]
+}
+
+my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
+```
+
+* `cyl == 4` on itself is invalid, there is no `cyl` in the global.
+* But, R refrains from judgement, stores it in a promise.
+* `substitute` gets the expression, which is the quoted call.
+* This expression is evaluated within the environment of `x`.
+* Here it is completely valid, because there is a `cyl` column.
+
+## Things not covered (extensively)
 
 - quasiquotation
 
 - quosures
 
-- formulas
+- environments
 
 ## Thank You!
 
