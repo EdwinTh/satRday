@@ -27,7 +27,7 @@ library(dplyr)
 
 Data scientist @ funda
 
-MSc in Applied Statistics
+Applied Statistics
 
 thatssorandom.com
 
@@ -47,31 +47,31 @@ Who:
 
 Who:
 
-* is very experienced with using NSE (base, tidyeval, or both)?
+* is very experienced with using NSE?
 
 ## Lets show some hands
 
 Who:
 
-* is very experienced with using NSE (base, tidyeval, or both)?
-* applies it now and then, but not with great comfort?
+* is very experienced with using NSE?
+* applies it now and then?
 
 ## Lets show some hands
 
 Who:
 
-* is very experienced with using NSE (base, tidyeval, or both)?
-* applies it now and then, but not with great comfort?
+* is very experienced with using NSE?
+* applies it now and then? 
 * only knows it at face value?
 
 ## Lets show some hands
 
 Who:
 
-* is very experienced with using NSE (base, tidyeval, or both)?
-* applies it now and then, but not with great comfort?
+* is very experienced with using NSE?
+* applies it now and then?
 * only knows it at face value?
-* has hardly a clue what it is?
+* is not really sure what it is?
 
 ## Why do we love R so much for data-analysis?
 
@@ -79,11 +79,19 @@ Who:
 
 We don't have to use R when using R!
 
+```{r}
+mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
+```
+
 ## Why do we love R so much for data-analysis?
 
 We don't have to use R when using R!
 
-We can do
+```{r}
+mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
+```
+
+Instead of this, we can do
 
 ```{r}
 library(dplyr)
@@ -97,13 +105,7 @@ mtcars_dt <- data.table::as.data.table(mtcars)
 mtcars_dt[, cyl_drat := cyl + drat]
 ```
 
-Instead of 
-
-```{r}
-mtcars$cyl_drat <- mtcars$cyl + mtcars$drat
-```
-
-## We all use NSE!
+## We all use NSE from the first day
 
 When you started using R, did you mix up?
 
@@ -117,27 +119,9 @@ and
 library(padr)
 ```
 
-## We all use NSE!
-
-When you started using R, did you mix up?
-
-```{r, eval=FALSE}
-install.packages("padr")
-```
-
-and
-
-```{r, eval=FALSE}
-library(padr)
-```
-
-Or wondered why the `library(padr)` worked. Even when there is no variable callend `padr`?
-
-## We all use NSE!
+## Domain Specific Languages
 
 Apparantly, things that ought not to work, are working.
-
-This results in a language full of magic:
 
 ```{r, eval = FALSE}
 subset(mtcars, cyl == 6)
@@ -148,21 +132,11 @@ ggplot2::ggplot(mtcars, aes(mpg, drat)) +
 data.table::as.data.table(mtcars)[ ,mean(mpg), by = cyl]
 ```
 
-## Why data analysts love it (and cs people don't)
-
-R is designed to do data science. (Well, then it was still called statistics).
-
-Flexibility to maiximize insight.
-
-Enable DSL creation to tailor make tools to solve a specific problem without overhead.
-
-With flexibility comes ambiguity and responsibility.
-
 ## Why should you care about how NSE works?
 
 ## Why should you care about how NSE works?
 
-* Because you are a geek who can't stand not knowing.
+* Because you are a geek and can't stand not knowing :)
 
 ##
 
@@ -175,28 +149,10 @@ With flexibility comes ambiguity and responsibility.
 
 ## Why should you care about how NSE works?
 
-* Because you are a geek who can't stand not knowing.
+* Because you are a geek and can't stand not knowing :)
 * Because most R users slip into tool design sooner or later.
 
-## What is standard in the first place?
-
-```{r, error=TRUE}
-my_val <- 123
-
-my_func <- function(x) {
-  x / 42 * 121
-}
-
-my_func(71)
-
-my_func(my_val)
-
-my_func(your_val)
-```
-
-## 
-
-<center><img src="shakespeare.jpg" height="525px" width="800" /></center>
+## So what is Standard?
 
 ## What's in a NAME
 
@@ -206,17 +162,15 @@ By creating a variable we bind a **value** to a **name**.
 my_val <- 123
 ```
 
-123 is the **value** that is bound to the **name** `my_val`.
-
 Binding happens in an environment, in this case the global.
 
 ## What's in a NAME
 
+By creating a variable we bind a **value** to a **name**.
+
 ```{r}
 my_val <- 123
 ```
-
-123 is the **value** that is bound to the **name** `my_val`.
 
 Binding happens in an environment, in this case the global.
 
@@ -268,18 +222,20 @@ So this is standard evaluation in R.
 
 ## Wait for it
 
-We can also ask R to postpone judgement, by storing the variable name in a **name object**.
+Postpone judgement, store variable name in a **name object**.
 
 ```{r}
-quote(my_unknown_var) %>% class()
+quote(wait_for_it)
+quote(wait_for_it) %>% class()
 ```
 
 ## Wait for it
 
-We can also ask R to postpone judgement, by storing the variable name in a **name object**.
+Postpone judgement, store variable name in a **name object**.
 
 ```{r}
-quote(my_unknown_var) %>% class()
+quote(wait_for_it)
+quote(wait_for_it) %>% class()
 ```
 
 This is the act of **quoting**, saving a variable name to be evaluated later.
@@ -295,20 +251,6 @@ quoted_var <- quote(wait_for_it)
 quoted_var
 quoted_var %>% class()
 ```
-
-## Wait for it
-
-Quoted variable names are not evaluated. It doesn't matter if they don't exist.
-
-```{r}
-quoted_var <- quote(wait_for_it)
-quoted_var
-quoted_var %>% class()
-```
-
-We have two variables here:
-
-The regular variable `quoted_var` contains the quoted variable `wait_for_it`.
 
 ## Wait for it
 
@@ -334,11 +276,18 @@ We can evaluate the `name` in a different environment.
 ## Building our own `pull`
 
 ```{r}
+dplyr::pull(mtcars, cyl)
+```
+
+
+## Building our own `pull`
+
+```{r}
 diy_pull <- function(x, name) {
   eval(name, envir = x)
 }
 
-diy_pull(mtcars, quote(cyl)) %>% head(5)
+diy_pull(mtcars, quote(cyl))
 ```
 
 ## Building our own `pull`
@@ -348,7 +297,7 @@ diy_pull <- function(x, name) {
   eval(name, envir = x)
 }
 
-diy_pull(mtcars, quote(cyl)) %>% head(5)
+diy_pull(mtcars, quote(cyl))
 ```
 
 Note that we can specify a data frame as environment. The column names can be called as variables within it.
@@ -357,9 +306,7 @@ Note that we can specify a data frame as environment. The column names can be ca
 
 <center><img src="quote-yourself.jpg" height="525px" width="800" /></center>
 
-## Quoting inside the function
-
-You'll never have to quote your function arguments when using a DSL.
+## DSLs take "bares" 
 
 ```{r, eval = FALSE}
 mtcars %>% select(cyl)
@@ -368,6 +315,53 @@ ggplot(mtcars, aes(cyl)) + geom_bar()
 ```
 
 Why does R not throw an error? There is no `cyl` in the global...
+
+## Quoting inside a function
+
+Would this work?
+
+```{r, eval=FALSE}
+diy_pull <- function(x, bare_name) {
+  name <- quote(bare_name)
+  eval(name, env = x)
+}
+```
+
+## Quoting inside a function
+
+Would this work?
+
+```{r, error=TRUE}
+diy_pull_2 <- function(x, bare_name) {
+  name <- quote(bare_name)
+  eval(name, env = x)
+}
+
+diy_pull(mtcars, cyl)
+```
+
+## Quoting inside a function
+
+`substitute` quotes the argument's content
+
+```{r}
+substitute_example <- function(x) {
+  substitute(x)
+}
+substitute_example(cyl)
+substitute_example(cyl) %>% class()
+```
+
+## Quoting inside a function
+
+```{r, error=TRUE}
+diy_pull <- function(x, bare_name) {
+  name <- substitute(bare_name)
+  eval(name, env = x)
+}
+
+diy_pull(mtcars, cyl)
+```
 
 ## Lazy, lazy R
 
@@ -392,91 +386,7 @@ def koala(x, y):
 koala(3)
 ```
 
-## Quoting inside a function
-
-So, R doesn't make a fuss until it really has to.
-
-This allows quoting inside functions.
-
-```{r, eval=FALSE}
-diy_pull_2 <- function(x, bare_name) {
-  name <- quote(bare_name)
-  eval(name, env = x)
-}
-```
-
-## Quoting inside a function
-
-So, R doesn't make a fuss until it really has to.
-
-This allows quoting inside functions.
-
-```{r, error=TRUE}
-diy_pull_2 <- function(x, bare_name) {
-  name <- quote(bare_name)
-  eval(name, env = x)
-}
-
-diy_pull_2(mtcars, cyl)
-```
-
-## Quoting inside a function
-
-`quote` does literally quote the input, but we want to quote the value at the argument, not the arg's name.
-
-Here we need `substitute`:
-
-```{r}
-substitute_example <- function(x) {
-  substitute(x)
-}
-substitute_example(cyl)
-substitute_example(cyl) %>% class()
-```
-
-## Quoting inside a function
-
-```{r, error=TRUE}
-diy_pull_2 <- function(x, bare_name) {
-  name <- substitute(bare_name)
-  eval(name, env = x)
-}
-
-diy_pull_2(mtcars, cyl)
-```
-
-## Not just names
-
-We can quote the following things:
-
-* *name*: the name of an R object
-
-* *call*: calling of a function
-
-* *pairlist*: something from the past you shouldn't bother about
-
-* *literal*: evaluates to the value itself
-
-## Expressions: "don't be another SQL"
-
-<center><img src="express.gif" height="525px" width="800" /></center>
-
-## Call
-
-Just like a **name**, a function **call** can be delayed by quoting.
-
-```{r}
-my_little_filter <- function(x, 
-                             call) {
-  call_quoted <- substitute(call)
-  retain_row  <- eval(call_quoted, envir = x)
-  x[retain_row, ]
-}
-
-my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
-```
-
-## The **promise** you make
+## 
 
 <img src="cock-robin.png" height="525px" width="700" />
 
@@ -515,9 +425,9 @@ koala(x = x_value)
 
 <center><img src="koala-promise.png" height="262.5" width="400" /></center>
 
-## Accessing the expression slot!
+## Accessing the expression slot
 
-Now, that's why `subsitute` works!
+That's how `subsitute` works!
 
 Accesses the expression in the promise without evaluating it.
 
@@ -530,6 +440,37 @@ subs_func(anything_goes)
 ```
 
 Note that `deparse` coerces the expression to a character. Its inverse is `parse`.
+
+## Not just names
+
+We can quote the following things:
+
+* *name*: the name of an R object
+
+* *call*: calling of a function
+
+* *pairlist*: something from the past you shouldn't bother about
+
+* *literal*: evaluates to the value itself
+
+## "don't be another SQL"
+
+<center><img src="express.gif" height="525px" width="800" /></center>
+
+## Call
+
+Just like a **name**, a function **call** can be delayed by quoting.
+
+```{r}
+my_little_filter <- function(x, 
+                             call) {
+  call_quoted <- substitute(call)
+  retain_row  <- eval(call_quoted, envir = x)
+  x[retain_row, ]
+}
+
+my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
+```
 
 ## Tidyeval
 
@@ -562,7 +503,7 @@ Why?
 
 In order to get it to work:
 
-* quote the variable, like in regular R
+* quote the variable upfront
 * unquote again before the argument is swallowed by the tidyverse function
 * then tidyverse function can go back and quote it again
 
