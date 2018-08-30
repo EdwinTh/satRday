@@ -47,20 +47,20 @@ Who:
 
 Who:
 
-* is very experienced with using NSE?
+* is very experienced in using NSE?
 
 ## Lets show some hands
 
 Who:
 
-* is very experienced with using NSE?
+* is very experienced in using NSE?
 * applies it now and then?
 
 ## Lets show some hands
 
 Who:
 
-* is very experienced with using NSE?
+* is very experienced in using NSE?
 * applies it now and then? 
 * only knows it at face value?
 
@@ -68,7 +68,7 @@ Who:
 
 Who:
 
-* is very experienced with using NSE?
+* is very experienced in using NSE?
 * applies it now and then?
 * only knows it at face value?
 * is not really sure what it is?
@@ -180,7 +180,7 @@ Just call my name, I'll give you the value:
 my_val
 ```
 
-This is *evaluating* the name.
+This is *evaluating* the variable name.
 
 ## Lexical scoping
 
@@ -209,7 +209,7 @@ another_func()
 
 ## Lexical scoping
 
-Finally, an error is thrown when the variable can't be found.
+Error is thrown when the variable can't be found.
 
 ```{r, error=TRUE}
 nobody_loves_me <- function() {
@@ -244,7 +244,7 @@ This is the act of **quoting**, saving a variable name to be evaluated later.
 
 ## Wait for it
 
-Quoted variable names are not evaluated. It doesn't matter if they don't exist.
+Quoted variable names not evaluated. It doesn't matter if they don't exist.
 
 ```{r}
 quoted_var <- quote(wait_for_it)
@@ -254,7 +254,7 @@ quoted_var %>% class()
 
 ## Wait for it
 
-It will start looking for the value only when we ask to evaluate it.
+Look for the value only when we ask to evaluate it.
 
 ```{r, error=TRUE}
 eval(quoted_var)
@@ -300,7 +300,7 @@ diy_pull <- function(x, name) {
 diy_pull(mtcars, quote(cyl))
 ```
 
-Note that we can specify a data frame as environment. The column names can be called as variables within it.
+A data frame is an environment too. Column names act as variables.
 
 ## 
 
@@ -362,6 +362,39 @@ diy_pull <- function(x, bare_name) {
 
 diy_pull(mtcars, cyl)
 ```
+
+## Not just names
+
+We can quote the following things:
+
+* *name*: the name of an R object
+
+* *call*: calling of a function
+
+* *pairlist*: something from the past you shouldn't bother about
+
+* *literal*: evaluates to the value itself
+
+## "don't be another SQL"
+
+<center><img src="express.gif" height="525px" width="800" /></center>
+
+## Call
+
+Just like a **name**, a function **call** can be delayed by quoting.
+
+```{r}
+my_little_filter <- function(x, 
+                             call) {
+  call_quoted <- substitute(call)
+  retain_row  <- eval(call_quoted, envir = x)
+  x[retain_row, ]
+}
+
+my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
+```
+
+## But, but ... why?
 
 ## Lazy, lazy R
 
@@ -441,37 +474,6 @@ subs_func(anything_goes)
 
 Note that `deparse` coerces the expression to a character. Its inverse is `parse`.
 
-## Not just names
-
-We can quote the following things:
-
-* *name*: the name of an R object
-
-* *call*: calling of a function
-
-* *pairlist*: something from the past you shouldn't bother about
-
-* *literal*: evaluates to the value itself
-
-## "don't be another SQL"
-
-<center><img src="express.gif" height="525px" width="800" /></center>
-
-## Call
-
-Just like a **name**, a function **call** can be delayed by quoting.
-
-```{r}
-my_little_filter <- function(x, 
-                             call) {
-  call_quoted <- substitute(call)
-  retain_row  <- eval(call_quoted, envir = x)
-  x[retain_row, ]
-}
-
-my_little_filter(mtcars, cyl == 4 & gear == 4) %>% head(2)
-```
-
 ## Tidyeval
 
 The `tidyverse` NSE dialect.
@@ -545,12 +547,12 @@ my_grouping_func(mtcars, cyl)
 ## Summary
 
 ```{r}
-my_correct_second_little_filter <- function(x, bare_call) {
+my_filter <- function(x, bare_call) {
   call <- substitute(bare_call)
   x[eval(call, envir = x), ]
 }
 
-my_correct_second_little_filter(mtcars, cyl == 4) %>% head(1)
+my_filter(mtcars, cyl == 4) %>% head(1)
 ```
 
 * `cyl == 4` on itself is invalid, there is no `cyl` in the global.
