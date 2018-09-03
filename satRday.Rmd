@@ -17,10 +17,6 @@ library(dplyr)
 
 ## whoami
 
-<center><img src="juul.jpg" height="500px" width="375" /></center>
-
-## whoami
-
 <center><img src="rcode.gif" height="348" width="498" /></center>
 
 ## whoami
